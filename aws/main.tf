@@ -5,7 +5,7 @@ resource "aws_sns_topic" "demo_service_low_alerts" {
 resource "aws_sns_topic_subscription" "demo_service_low_alerts_subscription" {
   protocol  = "https"
   topic_arn = aws_sns_topic.demo_service_low_alerts.arn
-  endpoint  = "http://pd.com/integrate"
+  endpoint  = var.demo_service_low_alerts_subscription_enpoint
 }
 
 resource "aws_cloudwatch_metric_alarm" "demo_service_low_alert" {

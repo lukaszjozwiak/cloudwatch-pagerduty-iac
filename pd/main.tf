@@ -35,11 +35,6 @@ resource "pagerduty_team_membership" "elmsynea_membership" {
   role    = "responder"
 }
 
-resource "pagerduty_user" "example" {
-  name  = "Earline Greenholt"
-  email = "125.greenholt.earline@graham.name"
-}
-
 resource "pagerduty_schedule" "demo_team_schedule" {
   name      = "Demo team rotation"
   time_zone = "Europe/Warsaw"
