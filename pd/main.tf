@@ -130,3 +130,36 @@ resource "pagerduty_service_integration" "demo_service_cloudwatch" {
   service = pagerduty_service.demo_service.id
   vendor  = data.pagerduty_vendor.cloudwatch.id
 }
+
+resource "pagerduty_ruleset" "demo_service_ruleset" {
+  name = "Demo Servcie Ruleset"
+  team {
+    id = pagerduty_team.demo_team.id
+  }
+}
+
+resource "pagerduty_ruleset_rule" "catch_all" {
+  ruleset  = pagerduty_ruleset.demo_service_ruleset.id
+  position = 0
+  conditions {
+    operator = "and"
+    subconditions {
+      operator = "contains"
+      parameter {
+        value = "AWSAccountId"
+        path  = "Message"
+      }
+    }
+  }
+  actions {
+    route {
+      value = pagerduty_service.demo_service.id
+    }
+    severity {
+      value = "warning"
+    }
+    annotate {
+      value = "Low priority alert"
+    }
+  }
+}
