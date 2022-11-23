@@ -17,22 +17,15 @@ resource "pagerduty_user" "elmsynea" {
   email = "elmsynea@rhyta.com"
 }
 
+locals {
+  users = [pagerduty_user.rairmana.id, pagerduty_user.idicresi.id, pagerduty_user.elmsynea.id]
+}
+
 resource "pagerduty_team_membership" "rairmana_membership" {
-  user_id = pagerduty_user.rairmana.id
-  team_id = pagerduty_team.demo_team.id
-  role    = "manager"
-}
-
-resource "pagerduty_team_membership" "idicresi_membership" {
-  user_id = pagerduty_user.idicresi.id
-  team_id = pagerduty_team.demo_team.id
-  role    = "observer"
-}
-
-resource "pagerduty_team_membership" "elmsynea_membership" {
-  user_id = pagerduty_user.elmsynea.id
-  team_id = pagerduty_team.demo_team.id
-  role    = "responder"
+  for_each = local.users
+  user_id  = each.key
+  team_id  = pagerduty_team.demo_team.id
+  role     = "observer"
 }
 
 resource "pagerduty_schedule" "demo_team_schedule" {
@@ -40,27 +33,11 @@ resource "pagerduty_schedule" "demo_team_schedule" {
   time_zone = "Europe/Warsaw"
 
   layer {
-    name                         = "rairmana layer"
+    name                         = "Team rota"
     start                        = "2022-11-06T20:00:00-05:00"
     rotation_virtual_start       = "2022-11-06T20:00:00-05:00"
     rotation_turn_length_seconds = 86400
-    users                        = [pagerduty_user.rairmana.id]
-  }
-
-  layer {
-    name                         = "idicresi layer"
-    start                        = "2022-11-06T20:00:00-05:00"
-    rotation_virtual_start       = "2022-11-06T20:00:00-05:00"
-    rotation_turn_length_seconds = 86400
-    users                        = [pagerduty_user.idicresi.id]
-  }
-
-  layer {
-    name                         = "elmsynea layer"
-    start                        = "2022-11-06T20:00:00-05:00"
-    rotation_virtual_start       = "2022-11-06T20:00:00-05:00"
-    rotation_turn_length_seconds = 86400
-    users                        = [pagerduty_user.elmsynea.id]
+    users                        = local.users
   }
 
   teams = [pagerduty_team.demo_team.id]
