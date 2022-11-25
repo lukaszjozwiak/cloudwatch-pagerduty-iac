@@ -42,17 +42,12 @@ resource "pagerduty_escalation_policy" "demo_team_all_members_escalation_policy"
 
   rule {
     escalation_delay_in_minutes = 10
-    target {
-      type = "user_reference"
-      id   = pagerduty_user.rairmana.id
-    }
-    target {
-      type = "user_reference"
-      id   = pagerduty_user.idicresi.id
-    }
-    target {
-      type = "user_reference"
-      id   = pagerduty_user.elmsynea.id
+    dynamic "target" {
+      for_each = toset([pagerduty_user.rairmana.id, pagerduty_user.idicresi.id, pagerduty_user.elmsynea.id])
+      content {
+        type = "user_reference"
+        id   = target.value
+      }
     }
   }
 }
