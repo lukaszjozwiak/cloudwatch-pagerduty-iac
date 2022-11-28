@@ -32,7 +32,7 @@ resource "aws_sns_topic_subscription" "demo_service_events_subscription" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "demo_service_low_event" {
-  alarm_name          = "demo-service-low-event"
+  alarm_name          = "demo-service-warning"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"

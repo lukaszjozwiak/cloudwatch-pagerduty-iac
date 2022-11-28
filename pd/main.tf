@@ -53,8 +53,11 @@ resource "pagerduty_event_orchestration_service" "demo_service_orchestration_ser
     rule {
       label = "Warnings should create low urgency incidents"
       condition {
-        expression = "event.custom_details.AlarmName matches part 'demo-service-low-event'"
+        expression = "event.custom_details.firing matches regex '(?i)-\\\\s*alertname\\\\s*=.*warning'"
       }
+      condition {
+        expression = "event.custom_details.AlarmName matches regex '(?i)warning'"
+      }      
       actions {
         severity = "warning"
       }
@@ -71,7 +74,7 @@ resource "pagerduty_event_orchestration_service" "demo_service_orchestration_ser
   }
   catch_all {
     actions {
-      severity = "info"
+      severity = "error"
     }
   }
 }
