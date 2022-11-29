@@ -62,15 +62,6 @@ resource "pagerduty_event_orchestration_service" "demo_service_orchestration_ser
         severity = "warning"
       }
     }
-    rule {
-      label = "Errors should create high urgency incidents"
-      condition {
-        expression = "event.custom_details.AlarmName matches part 'demo-service-high-event'"
-      }
-      actions {
-        severity = "critical"
-      }
-    }
   }
   catch_all {
     actions {
