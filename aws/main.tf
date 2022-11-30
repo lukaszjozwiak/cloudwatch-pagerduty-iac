@@ -9,7 +9,7 @@ resource "aws_sns_topic_subscription" "demo_service_events_subscription" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "demo_service_warning" {
-  alarm_name          = "demo-service-warning"
+  alarm_name          = "demo-service-FCP_LOW_LEVEL_ALERT"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -45,7 +45,7 @@ resource "aws_sns_topic_subscription" "demo_service_qa_events_subscription" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "demo_service_qa_warning" {
-  alarm_name          = "demo-service-qa-warning"
+  alarm_name          = "demo-service-qa-FCP_LOW_LEVEL_ALERT"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"

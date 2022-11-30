@@ -53,10 +53,10 @@ resource "pagerduty_event_orchestration_service" "demo_service_orchestration_ser
     rule {
       label = "Warnings should create low urgency incidents"
       condition {
-        expression = "event.custom_details.firing matches regex '(?i)-\\\\s*alertname\\\\s*=.*warning'"
+        expression = "event.custom_details.firing matches part 'FCP_LOW_LEVEL_ALERT'"
       }
       condition {
-        expression = "event.custom_details.AlarmName matches regex '(?i)warning'"
+        expression = "event.custom_details.AlarmName matches part 'FCP_LOW_LEVEL_ALERT'"
       }
       actions {
         severity = "warning"
