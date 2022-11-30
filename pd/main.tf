@@ -30,7 +30,7 @@ resource "pagerduty_service_integration" "demo_service_prometheus" {
 }
 
 resource "pagerduty_event_orchestration" "demo_service_orchestration" {
-  name = "Test Event Orchestration"
+  name = "Demo Service Event Orchestration"
   team = pagerduty_team.demo_team.id
 }
 
@@ -57,7 +57,7 @@ resource "pagerduty_event_orchestration_service" "demo_service_orchestration_ser
       }
       condition {
         expression = "event.custom_details.AlarmName matches regex '(?i)warning'"
-      }      
+      }
       actions {
         severity = "warning"
       }
@@ -69,3 +69,44 @@ resource "pagerduty_event_orchestration_service" "demo_service_orchestration_ser
     }
   }
 }
+
+resource "pagerduty_service" "demo_service_qa" {
+  name              = "Demo Service QA"
+  escalation_policy = pagerduty_escalation_policy.demo_team_all_members_escalation_policy.id
+  alert_creation    = "create_alerts_and_incidents"
+
+  incident_urgency_rule {
+    type    = "constant"
+    urgency = "severity_based"
+  }
+}
+
+resource "pagerduty_event_orchestration" "demo_service_qa_orchestration" {
+  name = "Demo Service QA Event Orchestration"
+  team = pagerduty_team.demo_team.id
+}
+
+resource "pagerduty_event_orchestration_router" "demo_service_qa_router" {
+  event_orchestration = pagerduty_event_orchestration.demo_service_qa_orchestration.id
+  set {
+    id = "start"
+  }
+  catch_all {
+    actions {
+      route_to = pagerduty_service.demo_service_qa.id
+    }
+  }
+}
+
+resource "pagerduty_event_orchestration_service" "demo_service_qa_orchestration_service" {
+  service = pagerduty_service.demo_service_qa.id
+  set {
+    id = "start"
+  }
+  catch_all {
+    actions {
+      suppress = true
+    }
+  }
+}
+
