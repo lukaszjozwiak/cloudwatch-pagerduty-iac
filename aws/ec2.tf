@@ -101,14 +101,14 @@ receivers:
   - name: 'qa'
     pagerduty_configs:
       - send_resolved: false
-        routing_key: \"${pagerduty_event_orchestration.demo_service_qa_orchestration.integration[0].parameters[0].routing_key}\"
+        routing_key: \"${var.demo_service_qa_events_integration_key}\"
         client: '{{ template \"pagerduty.default.client\" . }}'
         client_url: '{{ template \"pagerduty.default.clientURL\" . }}'
         description: '{{ template \"pagerduty.default.description\" .}}'
   - name: 'prod'
     pagerduty_configs:
       - send_resolved: false
-        routing_key: \"${pagerduty_event_orchestration.demo_service_orchestration.integration[0].parameters[0].routing_key}\"
+        routing_key: \"${var.demo_service_events_integration_key}\"
         client: '{{ template \"pagerduty.default.client\" . }}'
         client_url: '{{ template \"pagerduty.default.clientURL\" . }}'
         description: '{{ template \"pagerduty.default.description\" .}}'

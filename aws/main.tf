@@ -1,3 +1,7 @@
+locals {
+  pagerduty_url = "https://events.pagerduty.com/x-ere"
+}
+
 resource "aws_sns_topic" "demo_service_events" {
   name = "demo-service-events"
 }
@@ -5,7 +9,7 @@ resource "aws_sns_topic" "demo_service_events" {
 resource "aws_sns_topic_subscription" "demo_service_events_subscription" {
   protocol  = "https"
   topic_arn = aws_sns_topic.demo_service_events.arn
-  endpoint  = var.demo_service_events_integration_endpoint
+  endpoint  = "${local.pagerduty_url}/${var.demo_service_events_integration_key}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "demo_service_warning" {
@@ -41,7 +45,7 @@ resource "aws_sns_topic" "demo_service_qa_events" {
 resource "aws_sns_topic_subscription" "demo_service_qa_events_subscription" {
   protocol  = "https"
   topic_arn = aws_sns_topic.demo_service_qa_events.arn
-  endpoint  = var.demo_service_qa_events_integration_endpoint
+  endpoint  = "${local.pagerduty_url}/${var.demo_service_qa_events_integration_key}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "maximum_service_capacity_utilized" {
