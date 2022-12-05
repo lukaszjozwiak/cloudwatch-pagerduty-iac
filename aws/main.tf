@@ -2,8 +2,44 @@ locals {
   pagerduty_url = "https://events.pagerduty.com/x-ere"
 }
 
+data "aws_iam_policy_document" "cloudwatch_key_access" {
+  statement {
+    sid = "Allow cloudwatch to send events to encrypted topics"
+
+    actions = [
+      "kms:*"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
+resource "aws_kms_key" "sns_key" {
+  description         = "Sns key"
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.cloudwatch_key_access.json
+}
+
+resource "aws_kms_alias" "sns_alias" {
+  name          = "alias/sns-key-alias"
+  target_key_id = aws_kms_key.sns_key.key_id
+}
+
 resource "aws_sns_topic" "demo_service_events" {
-  name = "demo-service-events"
+  name              = "demo-service-events"
+  kms_master_key_id = aws_kms_key.sns_key.key_id
 }
 
 resource "aws_sns_topic_subscription" "demo_service_events_subscription" {
@@ -39,7 +75,8 @@ resource "aws_cloudwatch_metric_alarm" "demo_service_error" {
 }
 
 resource "aws_sns_topic" "demo_service_qa_events" {
-  name = "demo-service-qa-events"
+  name              = "demo-service-qa-events"
+  kms_master_key_id = aws_kms_key.sns_key.key_id
 }
 
 resource "aws_sns_topic_subscription" "demo_service_qa_events_subscription" {
