@@ -7,7 +7,11 @@ data "aws_iam_policy_document" "cloudwatch_key_access" {
     sid = "Allow cloudwatch to send events to encrypted topics"
 
     actions = [
-      "kms:*"
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey",
     ]
 
     principals {
@@ -15,14 +19,20 @@ data "aws_iam_policy_document" "cloudwatch_key_access" {
       identifiers = ["cloudwatch.amazonaws.com"]
     }
 
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "Default policy allows to update key in the future"
+
+    actions = ["kms:*"]
+
     principals {
       type        = "AWS"
       identifiers = ["*"]
     }
 
-    resources = [
-      "*"
-    ]
+    resources = ["*"]
   }
 }
 
