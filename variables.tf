@@ -1,3 +1,3 @@
-variable "pagerduty_token_global" {
+variable "pagerduty_token" {
   type = string
 }

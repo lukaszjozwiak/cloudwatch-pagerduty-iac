@@ -1,6 +1,6 @@
 module "pd" {
   source          = "./pd"
-  pagerduty_token = var.pagerduty_token_global
+  pagerduty_token = var.pagerduty_token
 }
 
 module "aws" {
